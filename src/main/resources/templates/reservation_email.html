@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation of Your Reservation</title>
+    <style>
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1700px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .signature {
+            margin-top: 50px;
+            text-align: left;
+        }
+
+        .reservation-details {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            max-width: 800px
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Confirmation of Your Reservation</h1>
+    <p>Dear User,</p>
+    <p>This email is to confirm your reservation made with fonbook.</p>
+    <div class="reservation-details">
+        <p>Please find below the details of your reservation:</p>
+        <p><strong>From:</strong> <span th:text="${checkInDate}"></span></p>
+        <p><strong>To:</strong> <span th:text="${checkOutDate}"></span></p>
+        <p><strong>Total Amount:</strong> <span th:text="${totalAmount}"></span></p>
+        <p><strong>Currency:</strong> <span th:text="${currency}"></span></p>
+        <p><strong>Number of People:</strong> <span th:text="${numberOfPeople}"></span></p>
+    </div>
+    <div class="signature">
+        <p>Best regards,</p>
+        <p>fonbook Team</p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,2 @@
+# Email-service
+The Email Service is a core component of our system responsible for managing email communication with users and hosts. It handles the sending and delivery of emails for various purposes such as notifications, alerts, and updates.

@@ -1,0 +1,43 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: email-service
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: ${EMAIL_USERNAME:fonbook4you@gmail.com}
+    password: ${EMAIL_PASSWORD:mdcp uwxk jlti vxuv}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: true
+
+
+templates:
+  name:
+    verification: verification_email.html
+    registration: registration_email.html
+    forgot-password: forgot_password_email.html
+    reservation: reservation_email.html
+
+
+rabbitmq:
+  exchanges:
+    internal: internal.exchange
+  queues:
+    email:
+      registration: email.registration.queue
+      verification: email.verification.queue
+      forgot-password: email.forgot-password.queue
+      reservation: email.reservation.queue
+  routing-keys:
+    internal-email-registration: internal.email.registration.routing-key
+    internal-email-verification: internal.email.verification.routing-key
+    internal-email-forgot-password: internal.email.forgot-password.routing-key
+    internal-email-reservation: internal.email.reservation.routing-key

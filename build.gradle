@@ -1,0 +1,72 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.3'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.google.cloud.tools.jib' version '3.4.0'
+}
+
+group = 'rs.ac.bg.fon'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    mapstructVersion = '1.5.5.Final'
+    openApiVersion = '2.3.0'
+    testContainersVersion = '1.19.4'
+    jsonWebToken = '0.12.5'
+
+}
+
+dependencies {
+    implementation(
+            'org.springframework.boot:spring-boot-starter-mail',
+            'org.springframework.boot:spring-boot-starter-web',
+            'org.slf4j:slf4j-api:latest.release',
+            'org.springframework.boot:spring-boot-starter-amqp',
+            'org.springframework.boot:spring-boot-starter-thymeleaf'
+    )
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation(
+            'org.springframework.boot:spring-boot-starter-test',
+            "org.testcontainers:rabbitmq:${testContainersVersion}",
+            "org.testcontainers:testcontainers:${testContainersVersion}",
+            "org.testcontainers:junit-jupiter:${testContainersVersion}"
+    )
+}
+
+jib {
+    from {
+        image = 'eclipse-temurin:17'
+    }
+    to {
+        image = "docker.io/${project.findProperty('docker-username')}/${project.findProperty('docker-image-name')}:${project.findProperty('docker-image-tag')}"
+        auth {
+            username = "${project.findProperty('docker-username')}"
+            password = "${project.findProperty('docker-password')}"
+        }
+    }
+}
+
+task skipSpringBootTestAndDataJpaTest(type: Test) {
+    useJUnitPlatform {
+        excludeTags 'springboot', 'datajpa'
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
