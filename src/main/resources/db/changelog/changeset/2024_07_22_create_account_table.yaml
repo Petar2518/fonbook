@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-account-table
+      author: pmilenkovic
+      changes:
+        - createTable:
+            tableName: accounts
+            columns:
+              - column:
+                  name: account_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: valid
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar(25)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: token_revoked_last_at
+                  type: date
+                  defaultValue: null
+              - column:
+                  name: active
+                  type: boolean
+                  constraints:
+                    nullable: false

@@ -1,0 +1,56 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: authentication-service
+  datasource:
+    username: ${POSTGRES_USERNAME:admin}
+    password: ${POSTGRES_PASSWORD:password}
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/authentication}
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: 'true'
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret-key: ${SECRET_KEY:VCinmKpfoFsGBQmBlJet9RLamlZQJa2i}
+  prefix: 'Bearer '
+  header: 'Authorization'
+  expiration-time: 3600 # in seconds
+  refresh-token-expiration-time: 86400 # in seconds
+
+password-reset-token:
+  expiration time: 15 # in minutes
+
+ignored-paths:
+  post: accounts, auth/login, accounts/forgot-password, accounts/activate/**
+  get: accounts/verify-email/**
+  put: accounts/reset-password/**
+  delete: accounts/**
+  csrf: accounts, auth/login, accounts/forgot-password, auth/logout, accounts/reset-password/**, accounts/**, accounts/activate/**
+
+cors:
+  allowed-methods: '*'
+  allowed-headers: '*'
+  exposed-headers: 'Authorization'
+  allowed-credentials: true
+  max-age: 3600
+
+rabbitmq:
+  exchanges:
+    internal: internal.exchange
+  routing-keys:
+    internal-email-registration: internal.email.registration.routing-key
+    internal-email-verification: internal.email.verification.routing-key
+    internal-email-forgot-password: internal.email.forgot-password.routing-key
+  path:
+    email-verification: http://localhost:8083/accounts/verify-email/
+
+scheduler:
+  enabled: true
+  fixed-rate: 3 # in hours
