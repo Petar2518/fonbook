@@ -1,0 +1,28 @@
+version: '3'
+services:
+  postgres:
+    container_name: postgres2
+    image: "postgres:latest"
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-username}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: reservations
+  rabbitmq:
+    container_name: rabbit
+    image: rabbitmq:management
+    environment:
+      RABBITMQ_DEFAULT_USER: username
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - "5600:5672"
+      - "15600:15672"
+networks:
+  postgres:
+    driver: bridge
+volumes:
+  postgres:
+  pgadmin:

@@ -1,0 +1,22 @@
+[
+  {
+    "id": 15,
+    "amount": 40,
+    "dateFrom": "5000-04-05",
+    "dateTo": "5000-04-20",
+    "currency": "eur",
+    "accommodationUnit": {
+      "id": 1,
+      "name": "string",
+      "description": "string",
+      "capacity": 1,
+      "accommodation": {
+        "id": 1,
+        "name": "string",
+        "description": "string",
+        "accommodationType": "HOTEL",
+        "hostId": 5
+      }
+    }
+  }
+]

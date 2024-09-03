@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_review_table
+      author: pmilenkovic
+      changes:
+        - createTable:
+            tableName: reviews
+            columns:
+              - column:
+                  name: title
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: comment
+                  type: varchar(350)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: rating
+                  type: double
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reservation_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: accommodation_id
+                  type: bigint
+              - addPrimaryKey:
+                  columnNames: reservation_id
+                  tableName: reviews
+              - addForeignKeyConstraint:
+                  baseColumnNames: reservation_id
+                  baseTableName: reviews
+                  constraintName: fk_review_reservation
+                  onDelete: CASCADE
+                  referencedColumnNames: id
+                  referencedTableName: reservations

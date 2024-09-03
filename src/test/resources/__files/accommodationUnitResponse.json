@@ -1,0 +1,26 @@
+{
+  "id": 0,
+  "name": "string",
+  "description": "string",
+  "capacity": 1,
+  "accommodation": {
+    "id": 0,
+    "name": "string",
+    "description": "string",
+    "accommodationType": "HOTEL",
+    "hostId": 0,
+    "amenities": [
+      {
+        "id": 0,
+        "amenity": "string"
+      }
+    ]
+  }
+}
+
+
+
+
+
+
+

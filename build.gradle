@@ -1,0 +1,98 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.2'
+	id 'io.spring.dependency-management' version '1.1.6'
+	id 'com.google.cloud.tools.jib' version '3.4.0'
+}
+
+group = 'rs.ac.bg.fon'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	mapstructVersion = '1.5.5.Final'
+	openApiVersion = '2.3.0'
+	webfluxVersion = '3.2.2'
+	testContainersVersion = '1.19.4'
+	springRetry = '2.0.3'
+	openFeign = '4.1.0'
+	wireMock = '3.5.2'
+	jwtVersion = '0.12.5'
+}
+
+dependencies {
+	implementation(
+			'org.springframework.boot:spring-boot-starter-data-jpa',
+			"org.springframework.retry:spring-retry:$springRetry",
+			'org.springframework.boot:spring-boot-starter-web',
+			"org.springdoc:springdoc-openapi-starter-webmvc-ui:$openApiVersion",
+			'org.springframework.boot:spring-boot-starter-validation',
+			'org.liquibase:liquibase-core',
+			'org.springframework.boot:spring-boot-starter-amqp',
+			"org.springframework.boot:spring-boot-starter-webflux:$webfluxVersion",
+			"org.mapstruct:mapstruct:$mapstructVersion",
+			"org.springframework.cloud:spring-cloud-starter-openfeign:$openFeign",
+			"io.jsonwebtoken:jjwt-api:$jwtVersion"
+	)
+
+	compileOnly 'org.projectlombok:lombok'
+
+	runtimeOnly(
+			'org.postgresql:postgresql',
+			"io.jsonwebtoken:jjwt-impl:$jwtVersion",
+			"io.jsonwebtoken:jjwt-jackson:$jwtVersion"
+	)
+
+	annotationProcessor(
+			'org.projectlombok:lombok',
+			"org.mapstruct:mapstruct-processor:$mapstructVersion"
+	)
+
+	testImplementation(
+			"org.testcontainers:junit-jupiter:${testContainersVersion}",
+			"org.wiremock:wiremock-standalone:$wireMock",
+			'org.springframework.boot:spring-boot-starter-test',
+			'org.springframework.security:spring-security-test',
+			"org.testcontainers:rabbitmq:${testContainersVersion}",
+			'org.springframework.amqp:spring-rabbit-test',
+			"org.testcontainers:postgresql:$testContainersVersion"
+	)
+}
+
+jib {
+	from {
+		image = 'eclipse-temurin:17'
+	}
+	to {
+		image = "docker.io/${project.findProperty('docker-username')}/${project.findProperty('docker-image-name')}:${project.findProperty('docker-image-tag')}"
+		auth {
+			username = "${project.findProperty('docker-username')}"
+			password = "${project.findProperty('docker-password')}"
+		}
+	}
+}
+
+task skipSpringBootTestAndDataJpaTest(type: Test) {
+	useJUnitPlatform {
+		excludeTags 'springboot', 'datajpa'
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+

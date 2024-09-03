@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_updated_requests_table
+      author: pmilenkovic
+      changes:
+        - createTable:
+            tableName: updated_requests
+            columns:
+              - column:
+                  name: updated_check_in
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_check_out
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message
+                  type: varchar(250)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: reservation_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - addPrimaryKey:
+                  columnNames: reservation_id
+                  tableName: updated_requests
+              - addForeignKeyConstraint:
+                  baseColumnNames: reservation_id
+                  baseTableName: updated_requests
+                  constraintName: fk_updatedRequest_reservation
+                  onDelete: CASCADE
+                  referencedColumnNames: id
+                  referencedTableName: reservations

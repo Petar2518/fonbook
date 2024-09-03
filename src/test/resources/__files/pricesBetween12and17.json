@@ -1,0 +1,62 @@
+[
+  {
+    "id": 14,
+    "amount": 50,
+    "dateFrom": "5000-04-11",
+    "dateTo": "5000-04-12",
+    "currency": "eur",
+    "accommodationUnit": {
+      "id": 1,
+      "name": "string",
+      "description": "string",
+      "capacity": 1,
+      "accommodation": {
+        "id": 1,
+        "name": "string",
+        "description": "string",
+        "accommodationType": "HOTEL",
+        "hostId": 5
+      }
+    }
+  },
+  {
+    "id": 15,
+    "amount": 40,
+    "dateFrom": "5000-04-12",
+    "dateTo": "5000-04-14",
+    "currency": "eur",
+    "accommodationUnit": {
+      "id": 1,
+      "name": "string",
+      "description": "string",
+      "capacity": 1,
+      "accommodation": {
+        "id": 1,
+        "name": "string",
+        "description": "string",
+        "accommodationType": "HOTEL",
+        "hostId": 5
+      }
+    }
+  },
+  {
+    "id": 16,
+    "amount": 30,
+    "dateFrom": "5000-04-14",
+    "dateTo": "5000-04-17",
+    "currency": "eur",
+    "accommodationUnit": {
+      "id": 1,
+      "name": "string",
+      "description": "string",
+      "capacity": 1,
+      "accommodation": {
+        "id": 1,
+        "name": "string",
+        "description": "string",
+        "accommodationType": "HOTEL",
+        "hostId": 5
+      }
+    }
+  }
+]

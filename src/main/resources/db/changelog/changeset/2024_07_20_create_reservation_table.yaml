@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_reservation_table
+      author: pmilenkovic
+      changes:
+        - createTable:
+            tableName: reservations
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: check_in_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: check_out_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_amount
+                  type: decimal
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number_of_people
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: accommodation_unit_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: profile_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: varchar(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: paid
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                    defaultValueBoolean: false
+        - createSequence:
+            sequenceName: reservation_id_seq
+            incrementBy: 1

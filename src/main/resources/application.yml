@@ -1,0 +1,47 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: reservation-service
+  cors:
+    payment-service:
+      allowed-origins: http://localhost:8091
+  datasource:
+    platform: postgres
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/reservations}
+    username: ${DB_USERNAME:username}
+    password: ${DB_PASSWORD:password}
+    driverClassName: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: 'true'
+    hibernate:
+      ddl-auto: validate
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    username: ${RABBITMQ_USERNAME:username}
+    password: ${RABBITMQ_PASSWORD:password}
+    port: ${RABBITMQ_PORT:5600}
+rabbitmq:
+  exchanges:
+    topic: internal.exchange
+    direct: Reservation-CRUD-Exchange
+  routing-keys:
+    search-service: "reservation.details.change"
+    email-service: internal.email.reservation.routing-key
+correspondingMapperForClass:
+  rs:
+    ac:
+      bg:
+        fon:
+          reservationservice:
+            model:
+              Reservation:
+                "fromEntityToReservationDto"
+feign:
+  client:
+    config:
+      accommodation-service:
+        url: http://localhost:8082
