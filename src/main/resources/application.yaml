@@ -1,0 +1,88 @@
+server:
+  port: 8092
+spring:
+  data:
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    port: ${RABBITMQ_PORT:5672}
+rabbitmq:
+  start:
+    delete:
+      exchange: "start-delete-exchange"
+      accommodation:
+        queue: "accommodation-start-delete-queue"
+        routing-key: "accommodation-start-delete-key"
+      accommodationUnit:
+        queue: "accommodation-unit-start-delete-queue"
+        routing-key: "accommodation-unit-start-delete-key"
+      address:
+        queue: "address-start-delete-queue"
+        routing-key: "address-start-delete-key"
+      price:
+        queue: "price-start-delete-queue"
+        routing-key: "price-start-delete-key"
+  notify:
+    delete:
+      exchange: "notify-delete-exchange"
+      accommodation:
+        routing-key: "accommodation-notify-delete-key"
+      accommodationUnit:
+        routing-key: "accommodation-unit-notify-delete-key"
+      address:
+        routing-key: "address-notify-delete-key"
+      price:
+        routing-key: "price-notify-delete-key"
+  success:
+    delete:
+      exchange: "confirm-delete-exchange"
+      accommodation:
+        routing-key: "accommodation-confirm-delete-key"
+        queue: "accommodation-confirm-queue"
+      accommodationUnit:
+        routing-key: "accommodation-unit-confirm-delete-key"
+        queue: "accommodation-unit-confirm-queue"
+      address:
+        routing-key: "address-confirm-delete-key"
+        queue: "address-confirm-queue"
+      price:
+        routing-key: "price-confirm-delete-key"
+        queue: "price-confirm-queue"
+  confirm:
+    delete:
+      exchange: "commit-delete-exchange"
+      accommodation:
+        routing-key: "accommodation-commit-delete-key"
+      accommodationUnit:
+        routing-key: "accommodation-unit-commit-delete-key"
+      address:
+        routing-key: "address-commit-delete-key"
+      price:
+        routing-key: "price-commit-delete-key"
+  revert:
+    delete:
+      exchange: "rollback-delete-exchange"
+      accommodation:
+        routing-key: "accommodation-rollback-delete-key"
+      accommodationUnit:
+        routing-key: "accommodation-unit-rollback-delete-key"
+      address:
+        routing-key: "address-rollback-delete-key"
+      price:
+        routing-key: "price-rollback-delete-key"
+  failure:
+    delete:
+      exchange: "decline-delete-exchange"
+      accommodation:
+        routing-key: "accommodation-decline-delete-key"
+        queue: "accommodation-decline-queue"
+      accommodationUnit:
+        routing-key: "accommodation-unit-decline-delete-key"
+        queue: "accommodation-unit-decline-queue"
+      address:
+        routing-key: "address-decline-delete-key"
+        queue: "address-decline-queue"
+      price:
+        routing-key: "price-decline-delete-key"
+        queue: "price-decline-queue"
