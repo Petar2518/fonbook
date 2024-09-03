@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_images_table
+      author: pmilenkovic
+      changes:
+        - createTable:
+            tableName: images
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: image
+                  type: bytea
+                  constraints:
+                    nullable: false
+              - column:
+                  name: accommodation_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            columnNames: id
+            tableName: images
+        - addForeignKeyConstraint:
+            baseColumnNames: accommodation_id
+            baseTableName: images
+            constraintName: fk_images_accommodation
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: accommodations

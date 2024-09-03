@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_address_table
+      author: pmilenkovic
+      changes:
+        - createTable:
+            tableName: address
+            columns:
+              - column:
+                  name: accommodation_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: country
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: city
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: street
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: street_number
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: postal_code
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: coordinate_latitude
+                  type: varchar(30)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: coordinate_longitude
+                  type: varchar(30)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: deleted
+                  type: boolean
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            columnNames: accommodation_id
+            tableName: address
+        - addForeignKeyConstraint:
+            baseColumnNames: accommodation_id
+            baseTableName: address
+            constraintName: fk_address_accommodation
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: accommodations

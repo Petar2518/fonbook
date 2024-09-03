@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_accommodation_units_table
+      author: pmilenkovic
+      changes:
+        - createTable:
+            tableName: accommodation_units
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(500)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: capacity
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: accommodation_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deleted
+                  type: boolean
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            columnNames: id
+            tableName: accommodation_units
+        - addForeignKeyConstraint:
+            baseColumnNames: accommodation_id
+            baseTableName: accommodation_units
+            constraintName: fk_accommodation_units_accommodation
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: accommodations

@@ -1,0 +1,89 @@
+spring:
+  datasource:
+    platform: postgres
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5433/accommodation}
+    username: ${POSTGRES_USERNAME:username}
+    password: ${POSTGRES_PASSWORD:password}
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+api:
+  title: "FonBook Accommodation API"
+  description: "Accommodation microservice is part of FonBook project, providing functionality regarding adding accommodations, updating their details or deleting them."
+  version: "0.0.1-SNAPSHOT"
+  contact:
+    name: "FON-Master"
+    email: "pm20233822@student.fon.bg.ac.rs"
+    url: "https://fon.bg.ac.rs"
+rabbitmq:
+  start:
+    delete:
+      exchanges: "start-delete-exchange"
+      accommodation:
+        routing-key: "accommodation-start-delete-key"
+      accommodationUnit:
+        routing-key: "accommodation-unit-start-delete-key"
+      address:
+        routing-key: "address-start-delete-key"
+      price:
+        routing-key: "price-start-delete-key"
+  success:
+    delete:
+      exchanges: "commit-delete-exchange"
+      queues:
+        accommodation: "accommodation-commit-delete-queue"
+        accommodation-unit: "accommodation-unit-commit-delete-queue"
+        price: "price-commit-delete-queue"
+        address: "address-commit-delete-queue"
+      routing-keys:
+        accommodation: "accommodation-commit-delete-key"
+        accommodation-unit: "accommodation-unit-commit-delete-key"
+        price: "price-commit-delete-key"
+        address: "address-commit-delete-key"
+  failure:
+    insert:
+      exchanges: "failure-insert-exchange"
+      queues:
+        accommodation: "accommodation-failure-insert-queue"
+        accommodation-unit: "accommodation-unit-failure-insert-queue"
+        price: "price-failure-insert-queue"
+        address: "address-failure-insert-queue"
+      routing-keys:
+        accommodation: "accommodation-failure-insert-key"
+        accommodation-unit: "accommodation-unit-failure-insert-key"
+        price: "price-failure-insert-key"
+        address: "address-failure-insert-key"
+    delete:
+      exchanges: "rollback-delete-exchange"
+      queues:
+        accommodation: "accommodation-rollback-delete-queue"
+        accommodation-unit: "accommodation-unit-rollback-delete-queue"
+        price: "price-rollback-delete-queue"
+        address: "address-rollback-delete-queue"
+      routing-keys:
+        accommodation: "accommodation-rollback-delete-key"
+        accommodation-unit: "accommodation-unit-rollback-delete-key"
+        price: "price-rollback-delete-key"
+        address: "address-rollback-delete-key"
+  crud-operations:
+    direct-exchange:
+      name:
+        "Accommodation-CRUD-Exchange"
+      routing-key:
+        "accommodation.details.change"
+correspondingMapperForClass:
+  rs:
+    ac:
+      bg:
+        fon:
+          accommodationservice:
+            model:
+              Accommodation:
+                "accommodationEntityToMessageDto"
+              AccommodationUnit:
+                "accommodationUnitEntityToMessageDto"
+              Address:
+                "addressEntityToMessageDto"
+              Price:
+                "priceEntityToMessageDto"

@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_amenities_table
+      author: pmilenkovic
+      changes:
+        - createTable:
+            tableName: amenities
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amenity
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            columnNames: id
+            tableName: amenities

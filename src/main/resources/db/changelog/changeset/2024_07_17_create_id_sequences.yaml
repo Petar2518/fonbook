@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_sequences
+      author: pmilenkovic
+      changes:
+        - createSequence:
+            sequenceName: accommodations_id_seq
+        - createSequence:
+            sequenceName: accommodation_units_id_seq
+        - createSequence:
+            sequenceName: amenities_id_seq
+        - createSequence:
+            sequenceName: images_id_seq
+        - createSequence:
+            sequenceName: prices_id_seq

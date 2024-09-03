@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_prices_table
+      author: pmilenkovic
+      changes:
+        - createTable:
+            tableName: prices
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: decimal
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: varchar(3)
+                  defaultValue: USD
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date_from
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date_to
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: accommodation_unit_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deleted
+                  type: boolean
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            columnNames: id
+            tableName: prices
+        - addForeignKeyConstraint:
+            baseColumnNames: accommodation_unit_id
+            baseTableName: prices
+            constraintName: fk_accommodation_units_accommodation
+            onDelete: CASCADE
+            referencedColumnNames: id
+            referencedTableName: accommodation_units
