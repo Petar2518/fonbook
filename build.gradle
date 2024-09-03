@@ -1,0 +1,86 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.2'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'com.google.cloud.tools.jib' version '3.4.0'
+}
+
+group = 'rs.ac.bg.fon'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    testContainersVersion = '1.18.1'
+    openApiVersion = '2.3.0'
+    mapstructVersion = '1.5.5.Final'
+    jacksonDatatypeVersion = '2.9.9'
+}
+
+
+dependencies {
+    implementation(
+            'org.springframework.boot:spring-boot-starter-data-mongodb',
+            'org.springframework.boot:spring-boot-starter-web',
+            'org.springframework.boot:spring-boot-starter-reactor-netty',
+            'org.springframework.boot:spring-boot-starter-webflux',
+            'org.springframework.boot:spring-boot-starter-validation',
+            "org.mapstruct:mapstruct:$mapstructVersion",
+            'org.springframework.boot:spring-boot-starter-amqp',
+            "org.springdoc:springdoc-openapi-starter-webmvc-ui:$openApiVersion"
+    )
+
+
+    compileOnly(
+            'org.projectlombok:lombok',
+            "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDatatypeVersion"
+    )
+
+    annotationProcessor(
+            'org.projectlombok:lombok',
+            "org.mapstruct:mapstruct-processor:$mapstructVersion"
+    )
+
+    testImplementation(
+            'org.springframework.boot:spring-boot-starter-test',
+            'org.springframework.security:spring-security-test',
+            "org.testcontainers:testcontainers:$testContainersVersion",
+            "org.testcontainers:junit-jupiter:$testContainersVersion",
+            "org.testcontainers:mongodb:$testContainersVersion"
+    )
+}
+
+jib {
+    from {
+        image = 'eclipse-temurin:17'
+    }
+    to {
+        image = "docker.io/${project.findProperty('docker-username')}/${project.findProperty('docker-image-name')}:${project.findProperty('docker-image-tag')}"
+        auth {
+            username = "${project.findProperty('docker-username')}"
+            password = "${project.findProperty('docker-password')}"
+        }
+    }
+}
+
+task skipSpringBootTestAndDataJpaTest(type: Test) {
+    useJUnitPlatform {
+        excludeTags 'springboot', 'datajpa'
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
