@@ -1,0 +1,224 @@
+version: '3'
+services:
+
+  postgres-user:
+    container_name: postgres-user
+    image: "postgres:latest"
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: user
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  postgres-host:
+    container_name: postgres-host
+    image: "postgres:latest"
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-username}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: hosts
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  postgres-accommodation:
+    container_name: postgres-accommodation
+    image: "postgres:latest"
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-username}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: accommodation
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  postgres-reservation:
+    container_name: postgres-reservation
+    image: "postgres:latest"
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-username}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: reservation
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  postgres:
+    container_name: postgres-auth
+    image: "postgres:latest"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: authentication
+    networks:
+      - postgres
+    restart: unless-stopped
+
+#  api-gateway:
+#    container_name: api-gateway-app
+#    image: pmilenkovic/fonbook-api-gateway-service:latest
+#    ports:
+#      - "8080:8080"
+
+  user-service:
+    container_name: user-service-app-normal
+    image: pmilenkovic/fonbook-user-service2:latest
+    ports:
+      - "8082:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres-user/user
+    networks:
+      - postgres
+#  user-service:
+#    container_name: user-service-app-error
+#    image: pmilenkovic/fonbook-user-service:latest
+#    ports:
+#      - "8082:8080"
+#    environment:
+#      POSTGRES_URL: jdbc:postgresql://postgres-user/user
+#    networks:
+#      - postgres
+
+  auth-service:
+    container_name: auth-service-app
+    image: pmilenkovic/fonbook-authentication-service
+    ports:
+      - "8083:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres/authentication
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      EMAIL_VERIFICATION_PATH: http://localhost:8083/accounts/verify-email/
+    networks:
+      - postgres
+
+  host-service:
+    container_name: host-service-app
+    image: pmilenkovic/fonbook-host-service:latest
+    ports:
+      - "8084:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres-host/hosts
+    networks:
+      - postgres
+
+  accommodation-service:
+    container_name: accommodation-service-app
+    image: pmilenkovic/fonbook-accommodation-service:latest
+    ports:
+      - "8086:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres-accommodation/accommodation
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    networks:
+      - postgres
+
+  reservation-service:
+    container_name: reservation-service-app
+    image: pmilenkovic/fonbook-reservation-service:latest
+    ports:
+      - "8087:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres-reservation/reservation
+      FEIGN_CLIENT_CONFIG_ACCOMMODATION-SERVICE_URL: http://accommodation-service:8080
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    networks:
+      - postgres
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management-alpine
+    hostname: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-guest}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - postgres
+      - mongodb_network
+
+  email-service:
+    container_name: email-service-app
+    image: pmilenkovic/fonbook-email-service:latest
+    ports:
+      - "8085:8082"
+    networks:
+      - postgres
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - data:/data
+    networks:
+      - mongodb_network
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=rootuser
+      - MONGO_INITDB_ROOT_PASSWORD=rootpass
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - "9031:8081"
+    networks:
+      - mongodb_network
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=rootuser
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpass
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+
+  search-service:
+    container_name: search-service-app
+    image:  pmilenkovic/fonbook-search-service:latest
+    ports:
+      - "8090:8090"
+    networks:
+      - mongodb_network
+    environment:
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+
+
+volumes:
+  data: { }
+
+networks:
+  postgres:
+    driver: bridge
+  mongodb_network:
+    driver: bridge
