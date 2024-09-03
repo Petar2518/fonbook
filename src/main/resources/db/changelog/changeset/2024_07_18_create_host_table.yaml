@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_hosts_table
+      author: pmilenkovic
+      changes:
+        - createTable:
+            tableName: hosts
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone_number
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: bank_account_number
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: boolean
+                  constraints:
+                    nullable: false

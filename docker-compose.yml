@@ -1,0 +1,20 @@
+version: '3'
+services:
+  postgres:
+    container_name: postgres
+    image: "postgres:latest"
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-username}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: hosts
+
+networks:
+  postgres:
+    driver: bridge
+volumes:
+  postgres:
+  pgadmin:

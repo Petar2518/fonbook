@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    platform: postgres
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/hosts}
+    username: ${DB_USERNAME:username}
+    password: ${DB_PASSWORD:password}
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+springdoc:
+  api-docs:
+    path: /api-docs
