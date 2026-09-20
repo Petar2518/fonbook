@@ -31,6 +31,19 @@ rabbitmq:
   routing-keys:
     search-service: "reservation.details.change"
     email-service: internal.email.reservation.routing-key
+resilience4j:
+  circuitbreaker:
+    instances:
+      reservationService:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 10
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
 correspondingMapperForClass:
   rs:
     ac:

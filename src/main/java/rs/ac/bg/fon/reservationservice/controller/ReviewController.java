@@ -1,5 +1,8 @@
 package rs.ac.bg.fon.reservationservice.controller;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rs.ac.bg.fon.reservationservice.adapters.ReviewDtoDomainAdapter;
 import rs.ac.bg.fon.reservationservice.dto.CreateReviewDto;
 import rs.ac.bg.fon.reservationservice.dto.ReviewDto;
@@ -18,9 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewController {
 
+    private static final Logger log = LoggerFactory.getLogger(ReviewController.class);
     private final ReviewDtoDomainAdapter reviewDtoDomainAdapter;
 
     @PostMapping("reservations/{reservationId}/reviews")
+    @CircuitBreaker(name = "reservationService", fallbackMethod = "serviceFallback")
     @ResponseStatus(HttpStatus.CREATED)
     public Long createReview(@PathVariable Long reservationId, @RequestBody @Valid CreateReviewDto createReviewDto) {
         return reviewDtoDomainAdapter.save(reservationId, createReviewDto);
@@ -49,4 +54,8 @@ public class ReviewController {
         return reviewDtoDomainAdapter.getByAccommodationId(accommodationId, pageable);
     }
 
+    public Long serviceFallback(Long id, CreateReviewDto createReviewDto, Exception e) {
+        log.warn("Error occurred - Circuit breaker handling");
+        return null;
+    }
 }

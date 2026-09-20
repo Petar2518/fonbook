@@ -3,6 +3,8 @@ package rs.ac.bg.fon.reservationservice.service.impl;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rs.ac.bg.fon.reservationservice.adapters.ReviewDomainEntityAdapter;
 import rs.ac.bg.fon.reservationservice.domain.ReservationDomain;
 import rs.ac.bg.fon.reservationservice.domain.ReviewDomain;
@@ -25,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
+    private static final Logger log = LoggerFactory.getLogger(ReviewServiceImpl.class);
     private final ReviewDomainEntityAdapter reviewDomainEntityAdapter;
     private final ObjectMapper objectMapper;
     private final AccommodationClient accommodationClient;
@@ -34,7 +37,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @Override
     public Long save(Long reservationId, ReviewDomain reviewDomain) {
-
+        log.info("Logs for testing circuit breaker ");
         ReservationDomain reservationDomain = reservationService.getById(reservationId);
         JsonNode accommodationUnitDto = accommodationClient.getAccommodationUnitById(reservationDomain.getAccommodationUnitId());
         Long accommodationId = accommodationUnitDto.get("accommodation").get("id").asLong();
