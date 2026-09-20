@@ -2,12 +2,16 @@ package rs.ac.bg.fon.accommodationservice.service.impl;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.retry.support.RetrySynchronizationManager;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.accommodationservice.adapters.serviceRepositoryAdapters.AccommodationUnitDomainEntityAdapter;
 import rs.ac.bg.fon.accommodationservice.domain.AccommodationUnitDomain;
@@ -19,6 +23,7 @@ import rs.ac.bg.fon.accommodationservice.service.AccommodationUnitService;
 import rs.ac.bg.fon.accommodationservice.service.PriceService;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +43,7 @@ public class AccommodationUnitServiceImpl implements AccommodationUnitService {
     private final PriceService priceService;
     private final ObjectMapper objectMapper;
 
+    @Retry(name="accommodationService",fallbackMethod = "catchError")
     @Override
     public Long save(AccommodationUnitDomain accommodationUnitDomain) {
         accommodationUnitDomain.setDeleted(false);
@@ -130,11 +136,18 @@ public class AccommodationUnitServiceImpl implements AccommodationUnitService {
         }
 
     @Override
+    @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 500))
     public void revertDeleteCascade(Long id) {
+        log.info("Retry attempt: {}", Objects.requireNonNull(RetrySynchronizationManager.getContext()).getRetryCount());
         List<AccommodationUnitDomain> units = getAllByAccommodation(id);
         if (!units.isEmpty()){
             units.forEach(unit->revertDelete(unit.getId()));
         }
+    }
+
+    public Long catchError(AccommodationUnitDomain accommodationUnitDomain, Exception e){
+        log.error("Caught error {}", e.getMessage());
+        return 0L;
     }
 
 }

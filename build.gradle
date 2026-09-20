@@ -28,6 +28,7 @@ ext {
 	openApiVersion = '2.3.0'
 	testContainersVersion = '1.19.4'
 	jsonWebToken = '0.12.5'
+	resilience4jVersion = '2.3.0'
 
 }
 
@@ -42,7 +43,10 @@ dependencies {
 			'org.springframework.boot:spring-boot-starter-amqp',
 			"io.jsonwebtoken:jjwt-api:${jsonWebToken}",
 			'org.projectlombok:lombok',
-
+			'org.springframework.boot:spring-boot-starter-webflux',
+			"io.github.resilience4j:resilience4j-spring-boot3:${resilience4jVersion}",
+			'org.springframework.boot:spring-boot-starter-actuator',
+			'org.springframework.boot:spring-boot-starter-aop',
 			'org.springframework.boot:spring-boot-starter-webflux'
 	)
 	compileOnly(
